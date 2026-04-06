@@ -183,9 +183,9 @@ begin
    + 'SELECT COUNT(*)' + #10
    + 'INTO table_count' + #10
    + 'FROM   all_objects' + #10
-   + 'WHERE  object_name = ''EasyDBVersionInfo'' AND object_type = ''TABLE'';' + #10
+   + 'WHERE  object_name = ''VersionInfo'' AND object_type = ''TABLE'';' + #10
    + 'IF table_count = 0 THEN' + #10
-   + '   EXECUTE IMMEDIATE ''CREATE TABLE EasyDBVersionInfo (' + #10
+   + '   EXECUTE IMMEDIATE ''CREATE TABLE VersionInfo (' + #10
    + '                       Version NUMBER(19) PRIMARY KEY,' + #10
    + '                       AppliedOn DATE DEFAULT SYSDATE,' + #10
    + '                       Author NVARCHAR2(100),' + #10

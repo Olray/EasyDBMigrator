@@ -122,8 +122,8 @@ begin
   begin
     LvScript :=
     IfThen(not FSchema.IsEmpty,
-    'INSERT INTO ' + FSchema + '.' + 'easydbversioninfo',
-    'INSERT INTO easydbversioninfo')
+    'INSERT INTO ' + FSchema + '.' + 'versioninfo',
+    'INSERT INTO versioninfo')
     + '(' + #10
     + '    version,' + #10
     + '    appliedon,' + #10
@@ -142,8 +142,8 @@ begin
   begin
     LvScript :=
     IfThen(not FSchema.IsEmpty,
-    'UPDATE ' + FSchema + '.' + 'easydbversioninfo',
-    'UPDATE easydbversioninfo')  + #10
+    'UPDATE ' + FSchema + '.' + 'versioninfo',
+    'UPDATE versioninfo')  + #10
     + 'SET    appliedon       = NOW(),' + #10
     + '       author          = CONCAT(author, '' -- '', ' + LvAuthor.QuotedString + '),' + #10
     + '       description     = CONCAT(description, '' -- '', ' + LvDescription.QuotedString + ')' + #10

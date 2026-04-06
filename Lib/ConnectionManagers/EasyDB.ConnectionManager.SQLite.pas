@@ -1,10 +1,12 @@
 {***************************************************}
 {                                                   }
-{   Auhtor: Ali Dehbansiahkarbon(adehban@gmail.com) }
-{   GitHub: https://github.com/AliDehbansiahkarbon  }
+{   Author: Ali Dehbansiahkarbon(adehban@gmail.com) }
+{   SQLite: Olray Dragon (prog@allanime.org)        }
+{   GitHub: https://github.com/Olray/EasyDBMigrator }
 {                                                   }
 {***************************************************}
-unit EasyDB.ConnectionManager.MySQL;
+
+unit EasyDB.ConnectionManager.SQLite;
 
 interface
 
@@ -13,7 +15,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
   FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
   Data.DB, FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
-  FireDAC.Comp.DataSet, {=MySQL=}FireDAC.Phys.MySQL, {$IF CompilerVersion >= 30}FireDAC.Phys.MySQLDef,{$IFEND} FireDAC.Comp.UI, {=MySQL=}
+  FireDAC.Comp.DataSet, {=MySQL=}FireDAC.Phys.SQLite, {$IF CompilerVersion >= 30}FireDAC.Phys.SQLiteDef,{$IFEND} FireDAC.Comp.UI, {=MySQL=}
 
   EasyDB.ConnectionManager.Base,
   EasyDB.Core,
@@ -22,22 +24,22 @@ uses
 
  type
 
-  TMySQLConnection = class(TConnection) // Singletone
+  TSQLiteConnection = class(TConnection) // Singletone
   private
     FConnection: TFDConnection;
-    FMySQLDriver: TFDPhysMySQLDriverLink;
+    FSQLiteDriver: TFDPhysSQLiteDriverLink;
     FQuery: TFDQuery;
-    FConnectionParams: TMySqlConnectionParams;
+    FConnectionParams: TSQLiteConnectionParams;
     Constructor Create;
-    class var FInstance: TMySQLConnection;
+    class var FInstance: TSQLiteConnection;
   public
-    class function Instance: TMySQLConnection;
+    class function Instance: TSQLiteConnection;
     Destructor Destroy; override;
 
     function GetConnectionString: string; override;
-    function SetConnectionParam(AConnectionParams: TMySqlConnectionParams): TMySQLConnection;
+    function SetConnectionParam(AConnectionParams: TSQLiteConnectionParams): TSQLiteConnection;
     function Connect: Boolean; override;
-    function ConnectEx: TMySQLConnection;
+    function ConnectEx: TSQLiteConnection;
     function IsConnected: Boolean;
     function InitializeDatabase: Boolean;
     function Logger: TLogger; override;
@@ -51,24 +53,24 @@ uses
     procedure CommitTrans;
     procedure RollBackTrans;
 
-    property ConnectionParams: TMySqlConnectionParams read FConnectionParams;
+    property ConnectionParams: TSQLiteConnectionParams read FConnectionParams;
   end;
 
 implementation
 
 { TMySQLConnection }
 
-procedure TMySQLConnection.BeginTrans;
+procedure TSQLiteConnection.BeginTrans;
 begin
   FConnection.Transaction.StartTransaction;
 end;
 
-procedure TMySQLConnection.CommitTrans;
+procedure TSQLiteConnection.CommitTrans;
 begin
   FConnection.Transaction.Commit;
 end;
 
-function TMySQLConnection.Connect: Boolean;
+function TSQLiteConnection.Connect: Boolean;
 begin
   try
     FConnection.Connected := True;
@@ -82,7 +84,7 @@ begin
   end;
 end;
 
-function TMySQLConnection.ConnectEx: TMySQLConnection;
+function TSQLiteConnection.ConnectEx: TSQLiteConnection;
 begin
   if Connect then
     Result := FInstance
@@ -93,25 +95,25 @@ begin
   end;
 end;
 
-constructor TMySQLConnection.Create;
+constructor TSQLiteConnection.Create;
 begin
   FConnection := TFDConnection.Create(nil);
-  FMySQLDriver := TFDPhysMySQLDriverLink.Create(nil);
-  FMySQLDriver.VendorHome := '.';
-  FMySQLDriver.VendorLib := 'libmysql32.dll';
+  FSQLiteDriver := TFDPhysSQLiteDriverLink.Create(nil);
+  FSQLiteDriver.VendorLib := 'sqlite3.dll';
 
-  FConnection.DriverName := 'MySQL';
+  FConnection.DriverName := 'SQLite';
   FConnection.LoginPrompt := False;
+
 
   FQuery := TFDQuery.Create(nil);
   FQuery.Connection := FConnection;
 end;
 
-destructor TMySQLConnection.Destroy;
+destructor TSQLiteConnection.Destroy;
 begin
   FQuery.Close;
   FQuery.Free;
-  FMySQLDriver.Free;
+  FSQLiteDriver.Free;
 
   FConnection.Close;
   FConnection.Free;
@@ -119,7 +121,7 @@ begin
   inherited;
 end;
 
-procedure TMySQLConnection.ExecuteAdHocQuery(AScript: string);
+procedure TSQLiteConnection.ExecuteAdHocQuery(AScript: string);
 begin
   try
     FConnection.ExecSQL(AScript);
@@ -131,7 +133,7 @@ begin
   end;
 end;
 
-procedure TMySQLConnection.ExecuteAdHocQueryWithTransaction(AScript: string);
+procedure TSQLiteConnection.ExecuteAdHocQueryWithTransaction(AScript: string);
 begin
   try
     BeginTrans;
@@ -146,7 +148,7 @@ begin
   end;
 end;
 
-procedure TMySQLConnection.ExecuteScriptFile(AScriptPath: string; ADelimiter: string);
+procedure TSQLiteConnection.ExecuteScriptFile(AScriptPath: string; ADelimiter: string);
 var
   LvStreamReader: TStreamReader;
   LvLine: string;
@@ -183,12 +185,12 @@ begin
     Logger.Log(atFileExecution, 'Script file doesn''t exists.');
 end;
 
-function TMySQLConnection.GetConnectionString: string;
+function TSQLiteConnection.GetConnectionString: string;
 begin
   Result := FConnection.ConnectionString;
 end;
 
-function TMySQLConnection.InitializeDatabase: Boolean;
+function TSQLiteConnection.InitializeDatabase: Boolean;
 var
   LvTbScript: string;
 begin
@@ -210,25 +212,25 @@ begin
   end;
 end;
 
-class function TMySQLConnection.Instance: TMySQLConnection;
+class function TSQLiteConnection.Instance: TSQLiteConnection;
 begin
   if not Assigned(FInstance) then
-    FInstance := TMySQLConnection.Create;
+    FInstance := TSQLiteConnection.Create;
 
   Result := FInstance;
 end;
 
-function TMySQLConnection.IsConnected: Boolean;
+function TSQLiteConnection.IsConnected: Boolean;
 begin
   Result := FConnection.Connected;
 end;
 
-function TMySQLConnection.Logger: TLogger;
+function TSQLiteConnection.Logger: TLogger;
 begin
   Result := TLogger.Instance;
 end;
 
-function TMySQLConnection.OpenAsInteger(AScript: string): Largeint;
+function TSQLiteConnection.OpenAsInteger(AScript: string): Largeint;
 begin
   FQuery.Open(AScript);
   if FQuery.RecordCount > 0 then
@@ -237,25 +239,26 @@ begin
     Result := -1;
 end;
 
-procedure TMySQLConnection.RollBackTrans;
+procedure TSQLiteConnection.RollBackTrans;
 begin
   FConnection.Transaction.Rollback;
 end;
 
-function TMySQLConnection.SetConnectionParam(AConnectionParams: TMySqlConnectionParams): TMySQLConnection;
+function TSQLiteConnection.SetConnectionParam(AConnectionParams: TSQLiteConnectionParams): TSQLiteConnection;
 begin
   FConnectionParams := AConnectionParams;
 
   with FConnection.Params, FConnectionParams do
   begin
     Clear;
-    Add('DriverID=MySQL');
-    Add('Server=' + Server);
-    Add('Port=' + Port.ToString);
-    Add('Database=' + Schema);
-    Add('User_name=' + UserName);
-    Add('Password=' + Pass);
-    Add('LoginTimeout=' + LoginTimeout.ToString);
+    Add('DriverID=SQLite');
+    Add('Database=' + FileName);
+    if UserName <> '' then
+    begin
+      Add('User_Name=' + UserName);
+      Add('Password=' + Pass);
+    end;
+    Add('LockingMode=Normal');
   end;
 
   Result := FInstance;

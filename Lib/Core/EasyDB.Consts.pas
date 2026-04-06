@@ -11,7 +11,7 @@ uses
   Winapi.Messages;
 
 const
-  TB = 'EasyDBVersionInfo';
+  TB = 'VersionInfo';
   WM_DONE = WM_USER + 1234;
   NoConnectionMsg = 'The connection is not established properly, please check the configuration.';
 

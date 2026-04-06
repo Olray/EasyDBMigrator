@@ -6,9 +6,9 @@ object frmMain: TfrmMain
   Margins.Right = 6
   Margins.Bottom = 6
   BorderStyle = bsToolWindow
-  Caption = 'Simple_MySQL'
-  ClientHeight = 934
-  ClientWidth = 978
+  Caption = 'Simple_SQLite'
+  ClientHeight = 946
+  ClientWidth = 964
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -80,13 +80,13 @@ object frmMain: TfrmMain
     Margins.Bottom = 6
     NumbersOnly = True
     TabOrder = 3
-    Text = '202301010001'
+    Text = '5'
   end
   object mmoLog: TMemo
-    Left = 32
-    Top = 148
+    Left = 11
+    Top = 149
     Width = 930
-    Height = 806
+    Height = 786
     Margins.Left = 6
     Margins.Top = 6
     Margins.Right = 6
@@ -97,7 +97,7 @@ object frmMain: TfrmMain
   object pbTotal: TProgressBar
     Left = 624
     Top = 16
-    Width = 338
+    Width = 329
     Height = 34
     Margins.Left = 6
     Margins.Top = 6

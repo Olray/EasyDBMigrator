@@ -1,6 +1,7 @@
 {***************************************************}
 {                                                   }
-{   Auhtor: Ali Dehbansiahkarbon(adehban@gmail.com) }
+{   Author: Ali Dehbansiahkarbon(adehban@gmail.com) }
+{   SQLite: Olray Dragon (prog@allanime.org)        }
 {   GitHub: https://github.com/AliDehbansiahkarbon  }
 {                                                   }
 {***************************************************}
@@ -32,6 +33,13 @@ type
     Server: string;
     LoginTimeout: Integer;
     Port: Integer;
+    UserName: string;
+    Pass: string;
+    Schema: string;
+  end;
+
+  TSQLiteConnectionParams = record
+    FileName: string;
     UserName: string;
     Pass: string;
     Schema: string;

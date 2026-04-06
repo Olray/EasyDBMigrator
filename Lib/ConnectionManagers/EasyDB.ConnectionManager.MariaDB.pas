@@ -191,7 +191,7 @@ function TMariaDBConnection.InitializeDatabase: Boolean;
 var
   LvTbScript: string;
 begin
-  LvTbScript := 'CREATE TABLE IF NOT EXISTS EasyDBVersionInfo ( ' + #10
+  LvTbScript := 'CREATE TABLE IF NOT EXISTS VersionInfo ( ' + #10
        + '  Version BIGINT NOT NULL PRIMARY KEY, ' + #10
        + '  AppliedOn DATETIME DEFAULT CURRENT_TIMESTAMP, ' + #10
        + '  Author NVARCHAR(100), ' + #10
